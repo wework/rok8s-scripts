@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# USAGE: sops-decypt-files <space delimited file names>
+# KNOWN ISSUES: Please don't use spaces in your file names.
+# OUTPUT: Outputs a list of space delimited file names to be used as an array
+
+# initialize the list of files to decrypt
+SOPS_FILES_LIST=($@)
+DECRYPTED_SUFFIX="${SOPS_DEFAULT_DECRYPTED_SUFFIX:-decrypted}"
+DECRYPTED_FILES_LIST=()
+
+for encrypted_file in ${SOPS_FILES_LIST[@]}; do
+    output_file="${encrypted_file}.${DECRYPTED_SUFFIX}"
+    sops ${SOPS_OPTIONS} --decrypt "${encrypted_file}" > "${output_file}"
+    DECRYPTED_FILES_LIST+=("${output_file}")
+done
+
+echo "${DECRYPTED_FILES_LIST[@]}"
