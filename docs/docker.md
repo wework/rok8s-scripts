@@ -47,11 +47,16 @@ docker-push -f deploy/build.config
 This will attempt to push the image with the following tags:
 ```
 "${EXTERNAL_REGISTRY_BASE_DOMAIN}/${REPOSITORY_NAME}:${CI_SHA1}"
-"${EXTERNAL_REGISTRY_BASE_DOMAIN}/${REPOSITORY_NAME}:${CI_REF}"
+"${EXTERNAL_REGISTRY_BASE_DOMAIN}/${REPOSITORY_NAME}:${CI_TAG}"
+"${EXTERNAL_REGISTRY_BASE_DOMAIN}/${REPOSITORY_NAME}:${CI_BRANCH}"
 "${EXTERNAL_REGISTRY_BASE_DOMAIN}/${REPOSITORY_NAME}:build_${CI_BUILD_NUM}"
 ```
 
-An important note here is that `$CI_REF` defaults to `$CI_BRANCH`, enabling caching in the build step.
+### Versioning
+A common practice is to set `CI_TAG` to a specific version number (often pulled from a
+git tag), such as `0.1` or `v1.2.3`. If you do this, you can also set `PUSH_ALL_VERSION_TAGS=true`
+to push tags for higher-level versions as well. E.g. `CI_TAG=v1.2.3` will create image tags
+`v1.2.3`, `v1.2`, and `v1`.
 
 ## Change Detection
 In some cases it will be beneficial to have an indicator of when a container that was built using the `docker-build` command actually created a new layer, as opposed to it just using cached layers.  There is a feature called `ROK8S_ENABLE_CHANGE_DETECTION` that can help with this.
